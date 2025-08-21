@@ -1,0 +1,18 @@
+Output Thrusters
+Output Light
+Output Bomb
+ButtonInput Button
+
+Function Launch:
+	Wait 3 seconds
+	Enable Thrusters
+	Enable Light
+
+	Wait 6 seconds
+	Disable Thrusters
+
+	Wait 3 seconds
+	Enable Bomb
+Done
+
+When Button Run Launch
