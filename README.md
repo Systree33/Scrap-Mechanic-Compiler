@@ -41,8 +41,15 @@ The output logic gates are red, and the input logic gates are light blue.
 
 The inputs and outputs are also on a diffrent row to all te other logic gates which do the processing.
 
+See `example code/Ordinator.txt` for another example of how to use.
+
 #### This is a work in progress
 It does work right now but i have some plans:
-- Make it so you can run other function from inside a function
-- Right now the logic gates are just lined up, so make them into a box or something more space efficient
-- Make it easier to use
+- [x] Make it so you can run other function from inside a function
+- [x] Right now the logic gates are just lined up, so make them into a box or something more space efficient
+- [ ] Make it easier to use
+- [ ] Add a logic gates simulation to test the output
+
+Also shows a picture of what the blueprint looks like:
+
+<img width="351" height="419" alt="Screenshot from 2026-02-17 01-57-22" src="https://github.com/user-attachments/assets/c0a463f3-c724-4658-8567-e488a27df4d5" />
