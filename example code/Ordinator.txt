@@ -1,0 +1,129 @@
+Input StartSystem
+
+Input Armed
+ButtonInput Start
+ButtonInput EStop
+
+Input 1
+Input 2
+Input 3
+Input 4
+Input 5
+
+OutputLinked SystemLight
+
+OutputLinked GreenLight
+OutputLinked RedLight
+
+Output Sound
+
+OutputLinked Safety
+
+Bool SystemOn
+Bool SystemReady
+
+Bool Started
+Bool EStopped
+
+Bool Blink
+
+Condition EnableSafety Or(Nor(Armed),Nor(SystemOn),EStopped)
+Link EnableSafety Safety
+
+Condition CanRun And(Started,Armed,Nor(EStopped))
+
+OutputLinked T1
+Condition T1On And(1,CanRun)
+Link T1On T1
+OutputLinked T2
+Condition T2On And(2,CanRun)
+Link T2On T2
+OutputLinked T3
+Condition T3On And(3,CanRun)
+Link T3On T3
+OutputLinked T4
+Condition T4On And(4,CanRun)
+Link T4On T4
+OutputLinked T5
+Condition T5On And(5,CanRun)
+Link T5On T5
+
+Condition AllOff Nor(1,2,3,4,5)
+Condition CanStart And(SystemOn,SystemReady,AllOff,Armed)
+
+Condition GreenLightOn And(Armed,Or(Started,And(SystemOn,Blink)),Nor(EStopped))
+Link GreenLightOn GreenLight
+Condition RedLightOn And(EStopped)
+Link RedLightOn RedLight
+
+Condition SystemLightOn And(SystemOn)
+Link SystemLightOn SystemLight
+
+Condition CanStartSystem Or(StartSystem)
+
+Function StartUpLoop:
+	Wait 10 Ticks
+	If And(StartSystem,Nor(SystemOn)) Run DoStartSystem
+	If And(Nor(StartSystem),SystemOn) Run DoStopSystem
+	Wait 5 Ticks
+	Run StartUpLoop
+Done
+
+Function BlinkLoop:
+	Wait 10 ticks
+	Enable Blink
+	Wait 10 ticks
+	Disable Blink
+	If Nor(Armed) Run RealStop
+	If And(SystemOn) Run BlinkLoop
+Done
+
+Function DoStartSystem:
+	Enable SystemOn
+	Wait 10 Ticks
+	Run BlinkLoop
+	Enable SystemReady
+Done
+
+Function DoStopSystem:
+	Disable SystemOn
+	Disable SystemReady
+	Disable Started
+	Disable EStopped
+	Disable Blink
+	Disable Sound
+Done
+
+Function DoStart:
+	If And(Armed,SystemOn,SystemReady,Nor(EStopped),AllOff) Run RealStart
+	If And(EStopped,Nor(Armed),AllOff) Run DisarmEStop
+Done
+
+Function RealStart:
+	Enable Started
+Done
+
+Function RealStop:
+	Disable Started
+Done
+
+Function DisarmEStop:
+	Disable EStopped
+	Disable Started
+	Disable Sound
+Done
+
+Function DoEStop:
+	Disable Started
+	If And(SystemOn,Started) Run RealEStop
+Done
+
+Function RealEStop:
+	Enable EStopped
+	Enable Sound
+	Disable Started
+Done
+
+Run StartUpLoop
+When Start Run DoStart
+When EStop Run DoEStop
